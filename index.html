@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Akshara Ice Cream Parlour</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#FFB6C1; /* soft pink */
+      --secondary:#FFF5E1; /* pale cream */
+      --accent:#FFD700; /* gold */
+      --bg: #FBFBFB;
+      --muted:#8a8a8a;
+      --card-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      --glass: rgba(255,255,255,0.7);
+    }
+    *{box-sizing:border-box}
+    body{font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; margin:0; background:linear-gradient(180deg,var(--secondary),#ffffff); color:#222}
+    /* Header */
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(90deg,rgba(255,255,255,0.9),rgba(255,255,255,0.7));backdrop-filter: blur(6px);border-bottom:1px solid rgba(0,0,0,0.04)}
+    .header-inner{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+    .logo{display:flex;align-items:center;gap:10px}
+    .logo .brand{font-weight:700;font-size:18px;color:var(--primary)}
+    .greeting{flex:1;text-align:center}
+    .greeting h1{margin:0;font-size:16px}
+    .date{font-size:12px;color:var(--muted)}
+    .search-wrap{display:flex;justify-content:center; padding:12px}
+    .search{width:100%;max-width:820px;display:flex;gap:8px;align-items:center}
+    .search input{flex:1;padding:12px 14px;border-radius:999px;border:1px solid rgba(0,0,0,0.06);box-shadow:var(--card-shadow);outline:none;font-size:14px}
+    .search .icon{background:var(--primary);padding:10px;border-radius:999px;color:white;display:inline-flex;align-items:center;justify-content:center}
+    /* layout */
+    main{max-width:1100px;margin:18px auto;padding:0 16px}
+    .categories{display:flex;gap:10px;overflow:auto;padding:8px 6px}
+    .cat{flex:0 0 auto;background:white;padding:10px 14px;border-radius:16px;box-shadow:var(--card-shadow);display:flex;align-items:center;gap:8px;min-width:110px;justify-content:center}
+    .cat span{font-weight:600}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+    @media(min-width:780px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media(min-width:1024px){.grid{grid-template-columns:repeat(4,1fr)}}
+    .card{background:white;border-radius:14px;padding:12px;box-shadow:var(--card-shadow);display:flex;flex-direction:column;gap:8px;transition:transform .18s ease,box-shadow .18s ease}
+    .card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,0.08)}
+    .media{height:110px;border-radius:10px;background:linear-gradient(135deg,var(--primary),#ffd6e0);display:flex;align-items:center;justify-content:center;font-size:42px}
+    .title{font-weight:600;font-size:14px}
+    .meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+    .price{font-weight:700;color:#222}
+    .badge{padding:6px 8px;border-radius:999px;font-size:12px;background:var(--secondary);display:inline-block}
+    .low{color:#b76300}
+    .actions{display:flex;gap:8px;align-items:center}
+    .qty{display:flex;align-items:center;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,0.06)}
+    .qty button{background:transparent;border:0;padding:8px 10px;font-weight:700}
+    .qty span{padding:6px 10px;min-width:28px;text-align:center}
+    .add{background:var(--primary);color:white;border:0;padding:8px 12px;border-radius:10px;cursor:pointer}
+    /* shop info */
+    .info{margin-top:18px;background:white;padding:14px;border-radius:12px;box-shadow:var(--card-shadow);display:grid;grid-template-columns:1fr;gap:8px}
+    @media(min-width:900px){.info{grid-template-columns:1fr 1fr}}
+    .footer{margin-top:20px;padding:18px 0;text-align:center;color:var(--muted)}
+    .footer .links{display:flex;gap:12px;justify-content:center}
+    /* search results dropdown */
+    .results{position:relative}
+    .suggestions{position:absolute;left:0;right:0;top:8px;background:white;border-radius:12px;box-shadow:var(--card-shadow);max-height:360px;overflow:auto;padding:8px;z-index:40}
+    .suggestion{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px}
+    .suggestion img{width:44px;height:44px;border-radius:8px;object-fit:cover}
+    /* cart */
+    .cart-btn{position:fixed;right:16px;bottom:18px;background:var(--accent);border-radius:999px;padding:14px 18px;color:#222;font-weight:700;box-shadow:0 8px 30px rgba(255,215,0,0.18);z-index:60}
+    .drawer{position:fixed;right:0;top:0;bottom:0;width:360px;background:white;box-shadow: -8px 0 30px rgba(0,0,0,0.08);transform:translateX(110%);transition:transform .28s ease;padding:18px;z-index:70;display:flex;flex-direction:column}
+    .drawer.open{transform:translateX(0)}
+    .small{font-size:12px;color:var(--muted)}
+    .out{color:#c62828;font-weight:700}
+    .avail{color:#2e7d32;font-weight:700}
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:none;align-items:center;justify-content:center;z-index:80}
+    .modal-backdrop.open{display:flex}
+    .modal{background:white;padding:16px;border-radius:12px;min-width:320px;max-width:720px;box-shadow:var(--card-shadow)}
+    input[type="text"], input[type="number"], select{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);width:100%}
+    button.btn{background:var(--primary);border-radius:10px;padding:8px 12px;border:0;color:white}
+    .hint{font-size:12px;color:#b76b6b}
+  </style>
+  
+  <!-- Firebase SDK from CDN (compat build for namespaced API) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fff,#ffecec);display:flex;align-items:center;justify-content:center;font-size:22px">🍨</div>
+        <div>
+          <div class="brand">Akshara Ice Cream Parlour</div>
+          <div class="small">Gourmet frozen treats near you</div>
+        </div>
+      </div>
+      <div class="greeting">
+        <h1 id="timeGreeting">Welcome</h1>
+        <div class="date" id="todayDate"></div>
+      </div>
+      <div style="width:44px"></div>
+    </div>
+    <div class="search-wrap">
+      <div class="search results">
+        <input id="search" placeholder="Search for item you need..." autocomplete="off">
+        <div class="icon">🔎</div>
+        <div class="suggestions" id="suggestions" style="display:none"></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="categories" id="categoryScroll" aria-hidden="false">
+      <div class="cat" data-cat="Cones">🍦 <span>Cones</span></div>
+      <div class="cat" data-cat="Cups">🍨 <span>Cups</span></div>
+      <div class="cat" data-cat="Bars">🍫 <span>Bars</span></div>
+      <div class="cat" data-cat="Sundaes">🍧 <span>Sundaes</span></div>
+      <div class="cat" data-cat="Family Packs">🎂 <span>Family Packs</span></div>
+      <div class="cat" data-cat="Beverages">🥤 <span>Beverages</span></div>
+    </section>
+
+    <section id="productsSection">
+      <div class="grid" id="productGrid"></div>
+      <div id="noResults" style="display:none;margin-top:12px;text-align:center;color:var(--muted)">Sorry, this item is not present in the shop.</div>
+    </section>
+
+    <section class="info" style="margin-top:18px">
+      <div>
+        <h3>Akshara Ice Cream Parlour</h3>
+        <div>yatra chowk akot</div>
+        <div>📞 <a href="tel:+918767702005">+91 87677 02005</a></div>
+        <div>Hours: 10:00 AM – 12:00 PM</div>
+      </div>
+      <div>
+        <h4>Location</h4>
+        <div style="border-radius:10px;overflow:hidden;margin-top:8px">
+          <iframe width="100%" height="200" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=ice+cream+shop+near+me&output=embed"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="links">
+        <a href="#">Home</a>
+        <a href="#">Categories</a>
+        <a href="#">Contact</a>
+        <a href="#">About Us</a>
+      </div>
+      <div style="margin-top:8px">Follow us: <span>Instagram</span> • <span>Facebook</span> • <span>WhatsApp</span></div>
+    </footer>
+  </main>
+
+  <div id="toast" style="position:fixed;left:50%;transform:translateX(-50%);bottom:32px;background:#222;color:#fff;padding:10px 14px;border-radius:10px;display:none;z-index:90"></div>
+
+  <script>
+    // Utilities
+    const $ = (s,el=document)=>el.querySelector(s)
+    const $$ = (s,el=document)=>[...el.querySelectorAll(s)]
+
+    // Sample data
+    const SAMPLE_PRODUCTS = [
+      {id:1,name:'Vanilla Cone',category:'Cones',price:30,stock:25,emoji:'🍦'},
+      {id:2,name:'Chocolate Cone',category:'Cones',price:40,stock:18,emoji:'🍫'},
+      {id:3,name:'Strawberry Cup',category:'Cups',price:55,stock:8,emoji:'🍓'},
+      {id:4,name:'Mango Sundae',category:'Sundaes',price:120,stock:4,emoji:'🥭'},
+      {id:5,name:'Choco Bar',category:'Bars',price:25,stock:0,emoji:'🍫'},
+      {id:6,name:'Family Pack (6)',category:'Family Packs',price:350,stock:6,emoji:'🎂'},
+      {id:7,name:'Cold Coffee',category:'Beverages',price:80,stock:12,emoji:'🥤'},
+    ];
+
+    // Persistence
+    function load(key, fallback){try{const s=localStorage.getItem(key);return s?JSON.parse(s):fallback}catch(e){return fallback}}
+    function save(key,val){localStorage.setItem(key,JSON.stringify(val))}
+
+    let products = load('ak_products', SAMPLE_PRODUCTS);
+    let cart = load('ak_cart', {});
+
+    // Greeting and date
+    function updateGreeting(){
+      const now = new Date();
+      const h = now.getHours();
+      let greeting='Hello';
+      if(h>=5 && h<=11) greeting='Good Morning ☀️';
+      else if(h>=12 && h<=16) greeting='Good Afternoon 🌤️';
+      else if(h>=17 && h<=20) greeting='Good Evening 🌇';
+      else greeting='Good Night 🌙';
+      $('#timeGreeting').textContent = greeting;
+      $('#todayDate').textContent = now.toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+    }
+    updateGreeting();
+
+    // Render products
+    function productCard(p){
+      const div = document.createElement('div');
+      div.className='card';
+      div.innerHTML = `
+        <div class="media">${p.emoji || '🍨'}</div>
+        <div class="title">${p.name}</div>
+        <div class="meta"><div class="small">Stock: ${p.stock} ${p.stock<=0?'<span class="out">Out</span>':'Available'}</div><div class="price">₹${p.price}</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="actions">
+            <div class="badge ${p.stock>0? 'avail':''}">${p.category}</div>
+          </div>
+          <div style="text-align:right">
+            ${p.stock>0?`<div style="font-size:12px;color:${p.stock<10? '#b76300': 'var(--muted)'}">${p.stock<10? 'Low stock':''}</div>`:''}
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+          <div class="badge ${p.stock>0? 'avail':''}">${p.stock>0? '✓ Available':'Out of Stock'}</div>
+        </div>
+      `;
+      return div;
+    }
+
+    function renderProducts(list){
+      const grid = $('#productGrid'); grid.innerHTML='';
+      if(!list.length){$('#noResults').style.display='block';} else {$('#noResults').style.display='none'}
+      list.forEach(p=>grid.appendChild(productCard(p)));
+    }
+
+    // Search & suggestions
+    const searchEl = $('#search');
+    const suggEl = $('#suggestions');
+
+    function searchProducts(query){
+      const q = (query||'').trim().toLowerCase();
+      if(!q) return products.slice();
+      return products.filter(p=>p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+    }
+
+    function showSuggestions(list){
+      if(!list.length){suggEl.style.display='block'; suggEl.innerHTML=`<div style="padding:12px" class="small">No results</div>`;return}
+      suggEl.style.display='block'; suggEl.innerHTML='';
+      list.slice(0,8).forEach(p=>{
+        const el = document.createElement('div'); el.className='suggestion';
+        el.innerHTML = `<div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,var(--primary),#ffd6e0);display:flex;align-items:center;justify-content:center;font-size:22px">${p.emoji}</div>
+                        <div style="flex:1"><div style="font-weight:600">${p.name}</div><div class="small">${p.category} • ₹${p.price}</div></div>
+                        <div style="text-align:right"><div class="small">Stock: ${p.stock}</div></div>`;
+        el.addEventListener('click',()=>{ searchEl.value = p.name; doLiveSearch(); suggEl.style.display='none'; });
+        suggEl.appendChild(el);
+      })
+    }
+
+    let lastQuery='';
+    function doLiveSearch(){
+      const q = searchEl.value;
+      lastQuery=q;
+      const results = searchProducts(q);
+      renderProducts(results);
+      if(q.trim()) showSuggestions(results);
+      else suggEl.style.display='none';
+      // show no-result message
+      if(q.trim() && results.length===0){$('#noResults').style.display='block'}
+    }
+
+    searchEl.addEventListener('input', doLiveSearch);
+    document.addEventListener('click',(e)=>{ if(!e.target.closest('.results')) suggEl.style.display='none' })
+
+    // Category click
+    $$('.cat').forEach(c=>c.addEventListener('click',()=>{
+      const cat = c.dataset.cat;
+      searchEl.value = cat; doLiveSearch();
+    }))
+
+    function showToast(msg, t=1800){ const tEl = $('#toast'); tEl.textContent = msg; tEl.style.display='block'; clearTimeout(tEl._h); tEl._h = setTimeout(()=>tEl.style.display='none', t) }
+
+    // Initialization
+    renderProducts(products);
+
+    // expose for debugging
+    window.ak = {products}
+  </script>
+
+  <!-- Firebase Initialization -->
+  <script>
+    // Firebase configuration for Akshara Ice Cream
+    const firebaseConfig = {
+      apiKey: "AIzaSyCcrX8FgP6Mq72OMSM49RsbjOv9INJQJzo",
+      authDomain: "aksharaicecream-e7160.firebaseapp.com",
+      projectId: "aksharaicecream-e7160",
+      storageBucket: "aksharaicecream-e7160.firebasestorage.app",
+      messagingSenderId: "723988179768",
+      appId: "1:723988179768:web:bf048ccbfd48d117c7afcd",
+      databaseURL: "https://aksharaicecream-e7160-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+
+    // Initialize Firebase
+    try {
+      firebase.initializeApp(firebaseConfig);
+      const firebaseDatabase = firebase.database();
+      console.log('Firebase initialized successfully!');
+      
+      // Load products from Firebase in real-time
+      firebaseDatabase.ref('products').on('value', (snapshot) => {
+        if (snapshot.exists()) {
+          const fbProducts = Object.values(snapshot.val()).sort((a, b) => (a.serial || a.id) - (b.serial || b.id));
+          products = fbProducts;
+          save('ak_products', products);
+          renderProducts(searchProducts(lastQuery || ''));
+          console.log('✓ Products synced from Firebase:', products.length);
+        }
+      });
+      
+    } catch(e) {
+      console.warn('Firebase not fully initialized. Using local data.', e);
+    }
+  </script>
+</body>
+</html>
